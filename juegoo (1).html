@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room: El Templo del Aprendizaje</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --correct: #10b981;
+            --incorrect: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        h1 { color: #818cf8; margin-top: 0; }
+        h2 { color: #f1f5f9; }
+        p { linear-height: 1.6; color: var(--text-muted); font-size: 1.1rem; }
+
+        input {
+            padding: 12px 16px;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 8px;
+            border: 2px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px;
+        }
+        button:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
+        button:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
+
+        /* Estilos de la Guía de Aprendizaje */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        .info-box {
+            background: #334155;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        .info-box h4 { margin: 0 0 5px 0; color: #fff; }
+        .info-box p { margin: 0; font-size: 0.9rem; color: #cbd5e1; }
+
+        /* Contenedor de Imagen/Icono Dinámico */
+        .game-image {
+            font-size: 5rem;
+            margin: 20px auto;
+            background: #334155;
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
+        }
+        .opt-btn {
+            background: #334155;
+            text-align: left;
+            padding: 15px;
+            margin: 0;
+            border: 1px solid #475569;
+        }
+        .opt-btn:hover { background: #475569; }
+
+        /* Retroalimentación Visual */
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+        .feedback.correct { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid var(--correct); display: block; }
+        .feedback.incorrect { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid var(--incorrect); display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="screen active">
+        <div class="card">
+            <div class="game-image">🏰</div>
+            <h1>Escape Room: El Templo del Aprendizaje</h1>
+            <p>Estás atrapado en las mazmorras del conocimiento. Para escapar, primero deberás estudiar los pergaminos sagrados y luego superar 5 acertijos sobre los Canales de Aprendizaje y el DUA.</p>
+            <input id="nombre" placeholder="Escribe tu nombre de explorador...">
+            <br>
+            <button onclick="irALectura()">Comenzar Misión</button>
+        </div>
+    </div>
+
+    <div id="intro-lectura" class="screen">
+        <div class="card">
+            <div class="game-image">📜</div>
+            <h2>Fase de Preparación: Los Pergaminos</h2>
+            <p>Lee con atención. Esta información es la clave para resolver los acertijos y poder escapar:</p>
+            
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>👁️ Canal Visual</h4>
+                    <p>Aprende mejor con mapas conceptuales, imágenes, infografías y diagramas.</p>
+                </div>
+                <div class="info-box">
+                    <h4>🎧 Canal Auditivo</h4>
+                    <p>El aprendizaje ocurre escuchando explicaciones, debates, audios o podcasts.</p>
+                </div>
+                <div class="info-box">
+                    <h4>🏃 Canal Kinestésico</h4>
+                    <p>Aprende haciendo, manipulando objetos, maquetas o mediante el movimiento físico.</p>
+                </div>
+                <div class="info-box">
+                    <h4>🎯 Principio DUA</h4>
+                    <p>El Diseño Universal para el Aprendizaje busca ofrecer múltiples formas de representación de la información.</p>
+                </div>
+            </div>
+
+            <button onclick="empezarEscape()">¡Estoy Listo, Empezar el Escape!</button>
+        </div>
+    </div>
+
+    <div id="game" class="screen">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem;">
+                <span id="player-name"></span>
+                <span id="progress"></span>
+            </div>
+            
+            <div id="q-image" class="game-image"></div>
+            
+            <h2 id="q-text"></h2>
+            
+            <div id="opts" class="options-container"></div>
+            
+            <div id="fb" class="feedback"></div>
+            
+            <button id="next-btn" onclick="proximaPregunta()" style="display: none; margin-top: 15px; width: 100%;">Avanzar a la siguiente puerta ➡️</button>
+        </div>
+    </div>
+
+    <div id="end" class="screen">
+        <div class="card">
+            <div id="end-image" style="font-size: 6rem; margin-bottom: 20px;"></div>
+            <h1 id="end-title"></h1>
+            <p id="end-desc"></p>
+            <h3 id="score" style="color: #818cf8; font-size: 1.5rem;"></h3>
+            <button onclick="location.reload()">Intentar Escapar de Nuevo</button>
+        </div>
+    </div>
+
+<script>
+// Base de datos de preguntas enriquecida con imágenes (emojis temáticos) y explicaciones detalladas
+const qs=[
+    {q:"Un alumno aprende mejor organizando las ideas con mapas conceptuales y diagramas vectoriales.",a:["Canal Visual","Canal Auditivo","Canal Kinestésico"],c:0,e:"¡Excelente! El canal visual retiene mejor la información cuando esta se presenta de forma gráfica y espacial.",img:"🗺️"},
+    {q:"Para comprender un tema complejo de historia, el estudiante prefiere escuchar un podcast o audiolibro camino a casa.",a:["Canal Visual","Canal Auditivo","Canal Kinestésico"],c:1,e:"¡Así es! El canal auditivo procesa la información secuencialmente a través del estímulo sonoro y la palabra hablada.",img:"🎧"},
+    {q:"En la clase de geometría, un alumno necesita manipular figuras de madera en 3D para entender el concepto de volumen.",a:["Canal Visual","Canal Auditivo","Canal Kinestésico"],c:2,e:"¡Correcto! El aprendizaje kinestésico se consolida a través del tacto, la experimentación corporal y la acción directa.",img:"📐"},
+    {q:"¿Qué principio fundamental del DUA (Diseño Universal para el Aprendizaje) propone ofrecer múltiples formas de representación?",a:["Proporcionar múltiples formas de Representación","Proporcionar múltiples formas de Acción y Expresión","Proporcionar múltiples formas de Implicación"],c:0,e:"¡Perfecto! La Representación se encarga del 'qué' del aprendizaje, asegurando que la información sea accesible para todos los canales.",img:"🎯"},
+    {q:"¿Qué recurso didáctico favorece principalmente al canal de aprendizaje visual?",a:["Una infografía colorida con iconos","Un debate grupal en clase","Una práctica de laboratorio interactiva"],c:0,e:"¡Logrado! Las infografías combinan texto e imágenes estables, permitiendo que los alumnos visuales repasen a su propio ritmo.",img:"📊"}
+];
+
+let i=0,s=0,nombreUsuario="";
+
+function irALectura() {
+    nombreUsuario = document.getElementById('nombre').value.trim();
+    if(!nombreUsuario){
+        alert('Por favor, escribe tu nombre de explorador para iniciar la aventura.');
+        return;
+    }
+    document.getElementById('home').classList.remove('active');
+    document.getElementById('intro-lectura').classList.add('active');
+}
+
+function empezarEscape(){
+    document.getElementById('intro-lectura').classList.remove('active');
+    document.getElementById('game').classList.add('active');
+    document.getElementById('player-name').textContent = 'Explorador: ' + nombreUsuario;
+    show();
+}
+
+function show(){
+    // Resetear elementos de interfaz
+    const fb = document.getElementById('fb');
+    const nextBtn = document.getElementById('next-btn');
+    fb.className = 'feedback';
+    fb.textContent = '';
+    nextBtn.style.display = 'none';
+    
+    // Cargar datos del acertijo actual
+    document.getElementById('progress').textContent = `Puerta ${i+1} de ${qs.length}`;
+    document.getElementById('q-text').textContent = qs[i].q;
+    document.getElementById('q-image').textContent = qs[i].img;
+    
+    const optsDiv = document.getElementById('opts');
+    optsDiv.innerHTML='';
+    
+    // Generar botones de opción
+    qs[i].a.forEach((textoOpcion, indiceOpcion)=>{
+        let b = document.createElement('button');
+        b.className = 'opt-btn';
+        b.textContent = textoOpcion;
+        b.onclick = () => verificarRespuesta(indiceOpcion, b);
+        optsDiv.appendChild(b);
+    });
+}
+
+function verificarRespuesta(indiceSeleccionado, botonPresionado){
+    const fb = document.getElementById('fb');
+    const botones = document.querySelectorAll('.opt-btn');
+    
+    // Deshabilitar todos los botones para que no cambie la opción elegida
+    botones.forEach(b => b.disabled = true);
+    
+    if(indiceSeleccionado === qs[i].c){
+        s++;
+        fb.innerHTML = "✅ ¡ACERTASTE! <br><br>" + qs[i].e;
+        fb.className = "feedback correct";
+        botonPresionado.style.background = "var(--correct)";
+    } else {
+        fb.innerHTML = "❌ ¡ERROR! La trampa se activa... <br><br>" + qs[i].e;
+        fb.className = "feedback incorrect";
+        botonPresionado.style.background = "var(--incorrect)";
+        // Resaltar la correcta sutilmente
+        botones[qs[i].c].style.border = "2px solid var(--correct)";
+    }
+    
+    // Mostrar el botón de avanzar
+    document.getElementById('next-btn').style.display = 'block';
+}
+
+function proximaPregunta(){
+    i++;
+    if(i < qs.length) {
+        show();
+    } else {
+        finalizarEscape();
+    }
+}
+
+function finalizarEscape(){
+    document.getElementById('game').classList.remove('active');
+    document.getElementById('end').classList.add('active');
+    
+    const endImage = document.getElementById('end-image');
+    const endTitle = document.getElementById('end-title');
+    const endDesc = document.getElementById('end-desc');
+    const scoreText = document.getElementById('score');
+    
+    scoreText.textContent = `Puntuación final: ${s} de ${qs.length} aciertos`;
+    
+    // Lógica condicional: Decide si escapa o no según sus respuestas (Mínimo 4 de 5)
+    if(s >= 4) {
+        endImage.textContent = "🔓🏃✨";
+        endTitle.textContent = `¡LOGRASTE ESCAPAR, ${nombreUsuario.toUpperCase()}!`;
+        endDesc.textContent = "Increíble. Has demostrado un dominio absoluto de los Canales de Aprendizaje y el DUA. Las puertas del templo se han abierto de par en par ante tu sabiduría.";
+    } else {
+        endImage.textContent = "🔒🕵️‍♂️🧱";
+        endTitle.textContent = "QUEDASTE ATRAPADO...";
+        endDesc.textContent = `Lo sentimos, ${nombreUsuario}. No has logrado descifrar suficientes acertijos para abrir la puerta principal del escape room. ¡Estudia los pergaminos e inténtalo de nuevo!`;
+    }
+}
+</script>
+</body>
+</html>
